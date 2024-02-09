@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+          version: 7
+
+    - name: Install dependencies
+      run: |
+        pnpm i
+
+    - name: Build
+      id: build
+      run: |
+        pnpm build
+
+    - name: Check version
+      id: check_version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        tag="v$(node -pe "require('./package.json').version")"
+        if ! [ $(git tag -l "$tag") ]; then
+          echo "changed=1" >> $GITHUB_OUTPUT 
+        fi
+        echo "tag=$tag" >> $GITHUB_OUTPUT
+    
+    - name: Package
+      id: package
+      if: steps.check_version.outputs.changed
+      run: |
+        cd dist
+        pnpm pack
+        echo "asset=./dist/$(find . -name '*.tgz')" >> $GITHUB_OUTPUT
+    
+    - name: Create release
+      id: create_release
+      if: steps.check_version.outputs.changed
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        tag=${{ steps.check_version.outputs.tag }}
+        asset=${{ steps.package.outputs.asset }}
+        gh release create "$tag" "$asset" \
+            --repo="$GITHUB_REPOSITORY" \
+            --generate-notes
+        

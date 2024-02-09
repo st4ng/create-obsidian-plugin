@@ -10,14 +10,14 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "main": "index.js",
   "bin": "./index.js",
   "scripts": {
     "dev": "tsc --watch",
-    "build": "eslint . && tsc",
-    "lint": "eslint . --fix"
+    "build": "eslint && tsc && cp ./LICENSE ./dist/LICENSE",
+    "lint": "eslint --fix"
   },
   "dependencies": {
     "adm-zip": "^0.5.10",
