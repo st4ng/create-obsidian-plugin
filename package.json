@@ -1,0 +1,38 @@
+{
+  "name": "create-obsidian-plugin",
+  "version": "0.1.0",
+  "description": "CLI tool to create an Obsidian plugin project from the official template.",
+  "keywords": [
+    "obsidian"
+  ],
+  "author": "st4ng",
+  "repository": "https://github.com/st4ng/create-obsidian-plugin",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=12"
+  },
+  "main": "index.js",
+  "bin": "./index.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "eslint . && tsc",
+    "lint": "eslint . --fix"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "chalk": "^5.3.0",
+    "change-case": "^5.4.2",
+    "commander": "^12.0.0",
+    "node-fetch": "^3.3.2",
+    "replace-in-file": "^7.1.0"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.5",
+    "@types/node": "^20.11.17",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  }
+}
